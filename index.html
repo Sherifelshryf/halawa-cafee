@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halawa Café — حلاوة كافيه</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&family=Noto+Serif+Arabic:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF6EE;
+    --cream-dark: #F0E9D8;
+    --brown-deep: #2A1A0E;
+    --brown-mid: #5C3D1E;
+    --brown-warm: #8B5E3C;
+    --gold: #C9A84C;
+    --gold-light: #E8C878;
+    --gold-pale: #F5E8C0;
+    --text-main: #1C110A;
+    --text-muted: #7A6050;
+    --white: #FFFFFF;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Jost', sans-serif;
+    --font-arabic: 'Noto Serif Arabic', serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ─── CURSOR ─── */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, opacity 0.3s ease;
+    opacity: 0.5;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.4s ease, padding 0.4s ease, backdrop-filter 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(250, 246, 238, 0.92);
+    backdrop-filter: blur(12px);
+    padding: 18px 60px;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--brown-deep);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brown-deep);
+    border: 1px solid var(--gold);
+    padding: 10px 24px;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--white); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 160px 80px 100px 120px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 6vw, 88px);
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--brown-deep);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-arabic {
+    font-family: var(--font-arabic);
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--brown-warm);
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+    direction: rtl;
+  }
+  .hero-sub {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 400px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+  .hero-actions {
+    display: flex; gap: 24px; align-items: center;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.1s forwards;
+  }
+  .btn-primary {
+    background: var(--brown-deep);
+    color: var(--gold-light);
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    text-decoration: none;
+    border: 1px solid var(--brown-deep);
+    transition: background 0.4s, color 0.4s, border-color 0.4s;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--brown-deep);
+  }
+  .btn-ghost {
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: color 0.3s;
+  }
+  .btn-ghost::after {
+    content: '';
+    display: block; width: 28px; height: 1px;
+    background: currentColor;
+    transition: width 0.3s;
+  }
+  .btn-ghost:hover { color: var(--gold); }
+  .btn-ghost:hover::after { width: 44px; }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeIn 1.4s ease 0.4s forwards;
+  }
+  .hero-image-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 60% 40%, #D4A853 0%, #8B5E3C 45%, #2A1A0E 100%);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 30px,
+        rgba(255,255,255,0.03) 30px,
+        rgba(255,255,255,0.03) 31px
+      );
+  }
+  .hero-coffee-art {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .coffee-circle {
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #E8C878, #C9A84C 40%, #8B5E3C 70%, #2A1A0E);
+    box-shadow:
+      0 0 0 1px rgba(201,168,76,0.3),
+      0 0 80px rgba(201,168,76,0.15),
+      inset 0 0 60px rgba(0,0,0,0.4);
+    position: relative;
+    animation: floatCoffee 6s ease-in-out infinite;
+  }
+  .coffee-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+  .coffee-ring:nth-child(1) { inset: -30px; }
+  .coffee-ring:nth-child(2) { inset: -60px; animation: rotateSlow 20s linear infinite; border-style: dashed; }
+  .coffee-ring:nth-child(3) { inset: -90px; }
+  .hero-tagline {
+    position: absolute;
+    bottom: 60px; left: 60px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    color: rgba(232, 200, 120, 0.7);
+    letter-spacing: 0.05em;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  .scroll-text {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ─── MARQUEE ─── */
+  .marquee-section {
+    background: var(--brown-deep);
+    padding: 18px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    padding: 0 40px;
+    display: flex; align-items: center; gap: 40px;
+    font-weight: 300;
+  }
+  .marquee-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ─── ABOUT ─── */
+  .about {
+    padding: 140px 120px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-label::before {
+    content: '';
+    display: block; width: 32px; height: 1px;
+    background: var(--gold);
+  }
+  .about-title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4vw, 60px);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--brown-deep);
+    margin-bottom: 32px;
+  }
+  .about-title em { font-style: italic; color: var(--gold); }
+  .about-body {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 52px;
+    padding-top: 52px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--brown-deep);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-num span { color: var(--gold); font-size: 28px; }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .about-visual {
+    position: relative;
+    height: 580px;
+  }
+  .about-card-main {
+    position: absolute;
+    top: 0; right: 0;
+    width: 85%;
+    height: 480px;
+    background: linear-gradient(145deg, #3D2512, #1A0D06);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-card-main::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 70% 30%, rgba(201,168,76,0.25) 0%, transparent 60%),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 20px,
+        rgba(201,168,76,0.04) 20px,
+        rgba(201,168,76,0.04) 21px
+      );
+  }
+  .about-icon {
+    font-family: var(--font-arabic);
+    font-size: 80px;
+    color: rgba(201,168,76,0.3);
+    letter-spacing: -4px;
+    text-align: center;
+    direction: rtl;
+    position: relative;
+    z-index: 1;
+  }
+  .about-card-accent {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 52%;
+    height: 200px;
+    background: var(--gold-pale);
+    border: 1px solid rgba(201,168,76,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+  .accent-arabic {
+    font-family: var(--font-arabic);
+    font-size: 28px;
+    color: var(--brown-mid);
+    margin-bottom: 8px;
+    direction: rtl;
+  }
+  .accent-sub {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ─── MENU ─── */
+  .menu-section {
+    background: var(--brown-deep);
+    padding: 140px 120px;
+    position: relative;
+    overflow: hidden;
+  }
+  .menu-section::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  }
+  .menu-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .menu-title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 5vw, 72px);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .menu-title em { color: var(--gold); font-style: italic; }
+  .menu-sub {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: rgba(250,246,238,0.4);
+    text-transform: uppercase;
+  }
+  .menu-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 60px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding-bottom: 0;
+  }
+  .menu-tab {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250,246,238,0.4);
+    padding: 14px 32px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.3s, border-color 0.3s;
+    background: none; border-left: none; border-right: none; border-top: none;
+    font-family: var(--font-body);
+  }
+  .menu-tab.active, .menu-tab:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+  .menu-grid {
+    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: rgba(201,168,76,0.08);
+  }
+  .menu-grid.active { display: grid; }
+  .menu-item {
+    background: rgba(42,26,14,0.8);
+    padding: 28px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+    gap: 20px;
+  }
+  .menu-item:hover { background: rgba(201,168,76,0.06); }
+  .item-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 1.3;
+  }
+  .item-name-ar {
+    font-family: var(--font-arabic);
+    font-size: 13px;
+    color: rgba(250,246,238,0.4);
+    margin-top: 4px;
+    direction: rtl;
+    text-align: right;
+  }
+  .item-price {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--gold);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .item-price span {
+    font-size: 12px;
+    font-family: var(--font-body);
+    letter-spacing: 0.1em;
+  }
+  .menu-note {
+    text-align: center;
+    margin-top: 52px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: rgba(250,246,238,0.3);
+    text-transform: uppercase;
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials {
+    padding: 140px 120px;
+    background: var(--cream-dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonials::before {
+    content: '"';
+    position: absolute;
+    top: 60px; left: 80px;
+    font-family: var(--font-display);
+    font-size: 280px;
+    color: rgba(201,168,76,0.1);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+  }
+  .test-title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 4vw, 58px);
+    font-weight: 300;
+    color: var(--brown-deep);
+    line-height: 1.1;
+  }
+  .test-title em { color: var(--gold); font-style: italic; }
+  .test-instagram {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: color 0.3s;
+  }
+  .test-instagram:hover { color: var(--gold); }
+  .test-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .test-card {
+    background: var(--cream);
+    padding: 36px;
+    border: 1px solid rgba(201,168,76,0.15);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .test-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+  }
+  .test-stars {
+    display: flex; gap: 4px; margin-bottom: 24px;
+  }
+  .star {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+  .test-quote {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--brown-mid);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+  .test-author {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ─── EXPERIENCE ─── */
+  .experience {
+    padding: 140px 120px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+  .exp-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+  .exp-box {
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+  }
+  .exp-box:nth-child(1) {
+    background: var(--brown-deep);
+    grid-column: span 2;
+    min-height: 160px;
+    flex-direction: row; align-items: center; gap: 40px;
+  }
+  .exp-box:nth-child(2) { background: var(--gold-pale); border: 1px solid rgba(201,168,76,0.3); }
+  .exp-box:nth-child(3) { background: var(--brown-warm); }
+  .exp-icon-text {
+    font-family: var(--font-arabic);
+    font-size: 52px;
+    direction: rtl;
+    color: rgba(201,168,76,0.4);
+  }
+  .exp-box-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--cream);
+    font-style: italic;
+  }
+  .exp-box-label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(250,246,238,0.5);
+    margin-top: 8px;
+  }
+  .exp-box:nth-child(2) .exp-box-title { color: var(--brown-deep); }
+  .exp-box:nth-child(2) .exp-box-label { color: var(--text-muted); }
+  .exp-box:nth-child(2) .exp-icon-text { color: rgba(139,94,60,0.3); }
+  .exp-content .section-label { margin-top: 0; }
+  .exp-title {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--brown-deep);
+    line-height: 1.15;
+    margin-bottom: 28px;
+  }
+  .exp-title em { color: var(--gold); font-style: italic; }
+  .exp-features {
+    list-style: none;
+    margin: 36px 0 48px;
+  }
+  .exp-features li {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+  .exp-features li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  /* ─── CONTACT ─── */
+  .contact {
+    background: var(--brown-deep);
+    padding: 140px 120px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::after {
+    content: '';
+    position: absolute;
+    bottom: -300px; left: -200px;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%);
+  }
+  .contact-title {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 4.5vw, 68px);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.05;
+    margin-bottom: 28px;
+  }
+  .contact-title em { color: var(--gold); font-style: italic; }
+  .contact-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(250,246,238,0.5);
+    margin-bottom: 52px;
+  }
+  .contact-links {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .contact-link {
+    display: flex; align-items: center; gap: 20px;
+    text-decoration: none;
+    color: rgba(250,246,238,0.6);
+    font-size: 14px;
+    transition: color 0.3s;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+  .contact-link:hover { color: var(--gold); }
+  .contact-link-icon {
+    width: 44px; height: 44px;
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .contact-link:hover .contact-link-icon {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+  }
+  .contact-link-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,246,238,0.3); margin-bottom: 4px; }
+  .contact-link-val { font-size: 14px; color: inherit; }
+
+  .contact-form { position: relative; z-index: 1; }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 10px;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.15);
+    color: var(--cream);
+    padding: 14px 18px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s;
+    appearance: none;
+  }
+  .form-select option { background: var(--brown-deep); }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--gold);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(250,246,238,0.25); }
+  .form-textarea { min-height: 100px; resize: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-submit {
+    width: 100%;
+    background: var(--gold);
+    color: var(--brown-deep);
+    border: none;
+    padding: 18px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 400;
+  }
+  .form-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .form-submit:active { transform: translateY(0); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #160B04;
+    padding: 60px 120px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--cream);
+    letter-spacing: 0.1em;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-copy {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(250,246,238,0.25);
+  }
+  .footer-social {
+    display: flex; gap: 20px;
+  }
+  .footer-social a {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(250,246,238,0.3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-social a:hover { color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes floatCoffee {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-16px) rotate(2deg); }
+  }
+  @keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.3; transform: scaleY(0.6); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.15s; }
+  .reveal-delay-2 { transition-delay: 0.3s; }
+  .reveal-delay-3 { transition-delay: 0.45s; }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 20px 28px; }
+    nav.scrolled { padding: 14px 28px; }
+    .nav-links, .nav-cta { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 120px 28px 60px; }
+    .hero-right { height: 260px; }
+    .about, .experience, .contact { grid-template-columns: 1fr; padding: 80px 28px; gap: 52px; }
+    .menu-section, .testimonials { padding: 80px 28px; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .test-grid { grid-template-columns: 1fr; }
+    .test-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    footer { flex-direction: column; gap: 24px; padding: 40px 28px; text-align: center; }
+    .about-visual { height: 360px; }
+    .exp-visual { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div style="position:fixed;bottom:20px;right:24px;z-index:9999;background:rgba(20,10,4,0.82);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,0.35);padding:8px 16px;pointer-events:none;">
+  <p style="font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.85);margin:0;">Mockup by TheWebMechanic</p>
+</div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Halawa<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Reserve a Table</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Est. Cairo · Since 2020</p>
+    <h1 class="hero-title">Where Every<br>Sip Tells a<br><em>Story</em></h1>
+    <p class="hero-arabic">حلاوة كافيه</p>
+    <p class="hero-sub">A sanctuary of flavour in the heart of Cairo — where Egyptian warmth meets artisan craft, one cup at a time.</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">Explore the Menu</a>
+      <a href="#about" class="btn-ghost">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image-bg"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-coffee-art">
+      <div class="coffee-circle">
+        <div class="coffee-ring"></div>
+        <div class="coffee-ring"></div>
+        <div class="coffee-ring"></div>
+      </div>
+    </div>
+    <p class="hero-tagline">حلاوة في كل قطرة</p>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <p class="scroll-text">Scroll</p>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><div class="marquee-dot"></div>Full Egyptian Breakfast</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Artisan Ful & Falafel</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Fresh Baked Feteer</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Traditional Foul Medames</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Homemade Omelettes</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Creamy Babaghanoush</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>حلاوة كافيه · Cairo</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Full Egyptian Breakfast</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Artisan Ful & Falafel</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Fresh Baked Feteer</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Traditional Foul Medames</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Homemade Omelettes</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>Creamy Babaghanoush</div>
+    <div class="marquee-item"><div class="marquee-dot"></div>حلاوة كافيه · Cairo</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div>
+    <p class="section-label reveal">Our Heritage</p>
+    <h2 class="about-title reveal reveal-delay-1">A Taste of <em>Authentic</em> Egypt</h2>
+    <p class="about-body reveal reveal-delay-2">Halawa Café was born from a simple love — the kind shared over a morning table, the smell of freshly baked bread, the ritual of a perfectly seasoned ful. We brought that intimacy to you.</p>
+    <p class="about-body reveal reveal-delay-2">Every dish on our menu is crafted with ingredients sourced locally and recipes passed down through generations. We don't reinvent tradition — we honour it.</p>
+    <div class="about-stats reveal reveal-delay-3">
+      <div>
+        <div class="stat-num">50<span>+</span></div>
+        <div class="stat-label">Menu Items</div>
+      </div>
+      <div>
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Happy Guests</div>
+      </div>
+      <div>
+        <div class="stat-num">1<span>st</span></div>
+        <div class="stat-label">Bite = Love</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-visual reveal reveal-delay-2">
+    <div class="about-card-main">
+      <div class="about-icon">ح ل ا و ة</div>
+    </div>
+    <div class="about-card-accent">
+      <div class="accent-arabic">حلاوة كافيه</div>
+      <div class="accent-sub">Cairo, Egypt · @halawacafe</div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="menu-header">
+    <p class="section-label reveal" style="justify-content:center; color: var(--gold);">What We Serve</p>
+    <h2 class="menu-title reveal reveal-delay-1">The <em>Menu</em></h2>
+    <p class="menu-sub reveal reveal-delay-2">طلبات سفرة · All prices in EGP</p>
+  </div>
+
+  <div class="menu-tabs reveal">
+    <button class="menu-tab active" onclick="switchTab('foul')">Ful & Falafel</button>
+    <button class="menu-tab" onclick="switchTab('omelette')">Omelettes</button>
+    <button class="menu-tab" onclick="switchTab('feteer')">Feteer</button>
+    <button class="menu-tab" onclick="switchTab('extras')">Extras & Sides</button>
+  </div>
+
+  <div class="menu-grid active" id="tab-foul">
+    <div class="menu-item"><div><div class="item-name">Ful Forn</div><div class="item-name-ar">طلب فول فرن</div></div><div class="item-price">50 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Har</div><div class="item-name-ar">طلب فول حار</div></div><div class="item-price">50 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Halabeyo</div><div class="item-name-ar">طلب فول حلابيو</div></div><div class="item-price">55 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Zeyton</div><div class="item-name-ar">طلب فول زيتون</div></div><div class="item-price">55 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Baladi</div><div class="item-name-ar">طلب فول بلدي</div></div><div class="item-price">55 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Iskandarany</div><div class="item-name-ar">طلب فول إسكندراني</div></div><div class="item-price">55 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Shamy</div><div class="item-name-ar">طلب فول شامي</div></div><div class="item-price">60 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Samn</div><div class="item-name-ar">طلب فول سمن</div></div><div class="item-price">70 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Falafel Small</div><div class="item-name-ar">فرن فلافل صغير</div></div><div class="item-price">2.5 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Falafel Kebeer</div><div class="item-name-ar">فرن فلافل كبير</div></div><div class="item-price">15 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Falafel Bisatsarma</div><div class="item-name-ar">فرن فلافل بسطرمة</div></div><div class="item-price">15 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Falafel Biseganek Kebeer</div><div class="item-name-ar">فرن فلافل بسجانك كبير</div></div><div class="item-price">20 <span>EGP</span></div></div>
+  </div>
+
+  <div class="menu-grid" id="tab-omelette">
+    <div class="menu-item"><div><div class="item-name">Omelette Plain</div><div class="item-name-ar">طلب أوميليت سادة</div></div><div class="item-price">50 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Bisatsarma</div><div class="item-name-ar">طلب أوميليت بسطرمة</div></div><div class="item-price">65 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Shish Tawook</div><div class="item-name-ar">طلب أوميليت شيش طاووق</div></div><div class="item-price">61 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Mix Jis</div><div class="item-name-ar">طلب أوميليت مكس جبن</div></div><div class="item-price">50 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Stanilsh</div><div class="item-name-ar">طلب أوميليت ستانيلش</div></div><div class="item-price">40 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Bizza</div><div class="item-name-ar">طلب بيتزا</div></div><div class="item-price">60 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Batwrsmi Shiddr</div><div class="item-name-ar">طلب بطرسمي شيدر</div></div><div class="item-price">10 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Omelette Babaghanoush</div><div class="item-name-ar">طلب أوميليت بابا غنوش</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Eggplant</div><div class="item-name-ar">طلب باذنجان</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Ful Baid</div><div class="item-name-ar">طلب فول بيض مسلوق</div></div><div class="item-price">15/10 <span>EGP</span></div></div>
+  </div>
+
+  <div class="menu-grid" id="tab-feteer">
+    <div class="menu-item"><div><div class="item-name">Feteer Mosammar</div><div class="item-name-ar">فرص مسمر</div></div><div class="item-price">— <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Feteer Mohammya</div><div class="item-name-ar">فرص محمية</div></div><div class="item-price">— <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Feteer Falafel Sagheer</div><div class="item-name-ar">فرن فلافل صغير</div></div><div class="item-price">2.5 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Feteer Falafel Shbad</div><div class="item-name-ar">فرن فلافل كبير</div></div><div class="item-price">15 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Feteer Bisatsarma</div><div class="item-name-ar">فرن فلافل بسطرمة</div></div><div class="item-price">15 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Feteer Jibna Kebeer</div><div class="item-name-ar">فرص جبنة كبيرة</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Feteer Bisatsarma Kebeer</div><div class="item-name-ar">فرص فلافل بسطرمة كبرى</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Rajba Maa</div><div class="item-name-ar">راجبة مياه</div></div><div class="item-price">10 <span>EGP</span></div></div>
+  </div>
+
+  <div class="menu-grid" id="tab-extras">
+    <div class="menu-item"><div><div class="item-name">Baba Ghanouj</div><div class="item-name-ar">طلب بابا غنوج</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Torshi</div><div class="item-name-ar">طلب طرشي</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Basara</div><div class="item-name-ar">طلب بصارة</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Tashkrouza</div><div class="item-name-ar">طلب تشكروزة</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Gebna Balady</div><div class="item-name-ar">طلب جبنة بلدي</div></div><div class="item-price">25 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Batatas Motabbla</div><div class="item-name-ar">بطاطس متبلة</div></div><div class="item-price">15 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Khiyar Matah</div><div class="item-name-ar">خيار مطة</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Salata</div><div class="item-name-ar">سلاطة</div></div><div class="item-price">20 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Tabina</div><div class="item-name-ar">طابينة</div></div><div class="item-price">10 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Mokhal</div><div class="item-name-ar">مخلل</div></div><div class="item-price">6 <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Aish Baladi</div><div class="item-name-ar">عيش بلدي</div></div><div class="item-price">— <span>EGP</span></div></div>
+    <div class="menu-item"><div><div class="item-name">Tayeen Misri</div><div class="item-name-ar">طعين مصري</div></div><div class="item-price">— <span>EGP</span></div></div>
+  </div>
+
+  <p class="menu-note reveal">Prices subject to change · طلبات سفرة · Full breakfast packages available</p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="experience">
+  <div class="test-header">
+    <h2 class="test-title reveal">Loved by<br><em>Cairo</em></h2>
+    <a href="https://instagram.com/halawacafe" class="test-instagram reveal">@halawacafe →</a>
+  </div>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="test-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <p class="test-quote">"The ful here is unlike anything else in Cairo. Rich, perfectly spiced, served with the warmth of a home kitchen. I come back every Friday morning."</p>
+      <p class="test-author">— Sarah M., Maadi</p>
+    </div>
+    <div class="test-card reveal reveal-delay-1">
+      <div class="test-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <p class="test-quote">"Halawa is our family's go-to. The feteer and the omelettes are extraordinary. The space feels curated and special — worth every visit."</p>
+      <p class="test-author">— Ahmed K., Zamalek</p>
+    </div>
+    <div class="test-card reveal reveal-delay-2">
+      <div class="test-stars"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+      <p class="test-quote">"I discovered Halawa through Instagram and it exceeded every expectation. The attention to quality and flavour is evident in every bite."</p>
+      <p class="test-author">— Nadia R., Heliopolis</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience">
+  <div class="exp-visual">
+    <div class="exp-box">
+      <div class="exp-icon-text">فطار</div>
+      <div>
+        <div class="exp-box-title">Morning Ritual</div>
+        <div class="exp-box-label">From dawn to noon</div>
+      </div>
+    </div>
+    <div class="exp-box">
+      <div class="exp-icon-text">جبن</div>
+      <div>
+        <div class="exp-box-title" style="color: var(--brown-deep);">Local Ingredients</div>
+        <div class="exp-box-label" style="color: var(--text-muted);">Sourced fresh daily</div>
+      </div>
+    </div>
+    <div class="exp-box">
+      <div class="exp-icon-text">فول</div>
+      <div>
+        <div class="exp-box-title">Egyptian Soul</div>
+        <div class="exp-box-label">Recipes generations old</div>
+      </div>
+    </div>
+  </div>
+  <div class="exp-content">
+    <p class="section-label reveal">Why Halawa</p>
+    <h2 class="exp-title reveal reveal-delay-1">The <em>Halawa</em> Difference</h2>
+    <p class="about-body reveal reveal-delay-2">We believe breakfast is the most sacred meal of the day. That's why we do it — and only it — with uncompromising intention.</p>
+    <ul class="exp-features reveal reveal-delay-2">
+      <li>Every ful recipe made in-house, seasoned by hand each morning</li>
+      <li>Freshly baked feteer using traditional Egyptian stone-milling</li>
+      <li>Locally sourced, seasonal ingredients — zero compromise on quality</li>
+      <li>A warm, unhurried atmosphere perfect for long morning conversations</li>
+      <li>Full breakfast packages for families and groups</li>
+    </ul>
+    <a href="#contact" class="btn-primary reveal reveal-delay-3">Book Your Morning</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div>
+    <p class="section-label" style="color: rgba(201,168,76,0.7);">Get in Touch</p>
+    <h2 class="contact-title">Come <em>Experience</em> Us</h2>
+    <p class="contact-body">Whether you're planning a family breakfast, looking for catering, or simply want to know more — we'd love to hear from you.</p>
+    <div class="contact-links">
+      <a href="https://instagram.com/halawacafe" class="contact-link">
+        <div class="contact-link-icon">📷</div>
+        <div>
+          <div class="contact-link-label">Instagram</div>
+          <div class="contact-link-val">@halawacafe</div>
+        </div>
+      </a>
+      <div class="contact-link">
+        <div class="contact-link-icon">📍</div>
+        <div>
+          <div class="contact-link-label">Location</div>
+          <div class="contact-link-val">Cairo, Egypt</div>
+        </div>
+      </div>
+      <div class="contact-link">
+        <div class="contact-link-icon">⏰</div>
+        <div>
+          <div class="contact-link-label">Hours</div>
+          <div class="contact-link-val">Daily · Morning to Midday</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="contact-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input type="text" class="form-input" placeholder="Ahmed Hassan">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input type="tel" class="form-input" placeholder="+20 10 0000 0000">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Enquiry Type</label>
+      <select class="form-select">
+        <option>Table Reservation</option>
+        <option>Group / Family Booking</option>
+        <option>Catering Enquiry</option>
+        <option>General Question</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferred Date & Time</label>
+      <input type="text" class="form-input" placeholder="Saturday morning, 9am…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <textarea class="form-textarea" placeholder="Tell us anything — group size, special requests, questions…"></textarea>
+    </div>
+    <button class="form-submit" onclick="handleSubmit(this)">Send Enquiry →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Halawa<span>.</span> حلاوة</div>
+  <p class="footer-copy">© 2025 Halawa Café · Cairo, Egypt · All rights reserved</p>
+  <div class="footer-social">
+    <a href="https://instagram.com/halawacafe">Instagram</a>
+  </div>
+</footer>
+
+<script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+  if (cursor) { cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; }
+  if (ring) { ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; }
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.addEventListener('mousedown', () => { if(cursor) cursor.style.transform = 'translate(-50%,-50%) scale(2)'; });
+document.addEventListener('mouseup', () => { if(cursor) cursor.style.transform = 'translate(-50%,-50%) scale(1)'; });
+
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+function switchTab(tab) {
+  document.querySelectorAll('.menu-tab').forEach((t, i) => {
+    const tabs = ['foul','omelette','feteer','extras'];
+    t.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.menu-grid').forEach(g => {
+    g.classList.remove('active');
+  });
+  const el = document.getElementById('tab-' + tab);
+  if(el) el.classList.add('active');
+}
+
+function handleSubmit(btn) {
+  btn.textContent = 'Message Sent ✓';
+  btn.style.background = '#4A7C3F';
+  btn.style.color = '#E8F5E0';
+  setTimeout(() => { btn.textContent = 'Send Enquiry →'; btn.style.background = ''; btn.style.color = ''; }, 3000);
+}
+</script>
+</body>
+</html>
